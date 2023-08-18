@@ -1,0 +1,14 @@
+[Unit]
+Description=Eupnea Service
+After=network.target
+
+[Service]
+Type=simple
+User=nobody
+Group=nobody
+ExecStart=/usr/local/bin/eupnea
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
