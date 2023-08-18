@@ -15,7 +15,7 @@ interface NodeProps {
 
 export default function NodeInfo(props: NodeProps): JSX.Element {
   return (
-    <div p-4 border m-2 bg-blue-300 rounded shadow-md>
+    <div p-4 border m-2 bg-blue-300 filter-drop-shadow filter-sepia-10 rounded shadow-md>
       <h2 text-2xl fw-bold>{props.node.name}</h2>
       <p>CPU Usage: <UsageBar current={props.node.cpu} max={1} /></p>
       <p>Memory Used: <UsageBar current={props.node.memory_used} max={props.node.memory_total} /></p>
