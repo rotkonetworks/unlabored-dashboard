@@ -1,0 +1,24 @@
+name: Python CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    env:
+      API_ENDPOINT: ${{ secrets.API_ENDPOINT }}
+      TOKEN: ${{ secrets.TOKEN }}
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+    - run: pip install -r requirements.txt
+    - run: python main.py
