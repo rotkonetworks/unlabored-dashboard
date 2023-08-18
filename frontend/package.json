@@ -1,0 +1,35 @@
+{
+  "name": "testing",
+  "scripts": {
+    "dev": "solid-start dev",
+    "build": "solid-start build",
+    "start": "solid-start start"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@iconify-json/logos": "^1.1.34",
+    "@types/node": "^18.16.19",
+    "@unocss/core": "^0.55.1",
+    "@unocss/preset-attributify": "^0.55.1",
+    "@unocss/preset-icons": "^0.55.1",
+    "@unocss/preset-uno": "^0.55.1",
+    "@unocss/vite": "^0.55.1",
+    "esbuild": "^0.14.54",
+    "postcss": "^8.4.26",
+    "solid-start-node": "^0.3.0",
+    "typescript": "^5.1.6",
+    "unocss": "^0.55.1",
+    "vite": "^4.4.9"
+  },
+  "dependencies": {
+    "@solid-primitives/event-listener": "^2.2.14",
+    "@solid-primitives/websocket": "^1.1.0",
+    "@solidjs/meta": "^0.28.5",
+    "@solidjs/router": "^0.8.2",
+    "solid-js": "^1.7.11",
+    "solid-start": "^0.3.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
