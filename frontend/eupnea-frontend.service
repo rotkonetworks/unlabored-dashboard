@@ -1,0 +1,18 @@
+[Unit]
+Description=Solid Application
+After=network.target
+
+[Service]
+User=eupneauser
+Group=eupneauser
+WorkingDirectory=/opt/gh/unlabored-dashboard/frontend
+ExecStart=/usr/local/bin/pnpm run start
+Restart=always
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=solid-app
+
+[Install]
+WantedBy=multi-user.target
