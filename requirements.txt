@@ -1,4 +1,5 @@
-requests
+treq
+pyopenssl
 python-dotenv
 autobahn
 twisted
