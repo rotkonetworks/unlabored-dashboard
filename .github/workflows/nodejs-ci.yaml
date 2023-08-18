@@ -19,6 +19,9 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
 
+    - name: Change directory to frontend
+      run: cd frontend
+
     - name: Install dependencies
       run: npm install # or use pnpm install if you're using pnpm
 
@@ -35,6 +38,9 @@ jobs:
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
+
+    - name: Change directory to frontend
+      run: cd frontend
 
     - name: Install dependencies
       run: npm install
