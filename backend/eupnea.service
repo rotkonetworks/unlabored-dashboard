@@ -4,8 +4,9 @@ After=network.target
 
 [Service]
 Type=simple
-User=nobody
-Group=nobody
+User=eupneauser
+Group=eupneauser
+WorkingDirectory=/opt/gh/unlabored-dashboard/backend
 ExecStart=/usr/local/bin/eupnea
 Restart=on-failure
 RestartSec=10
