@@ -21,8 +21,8 @@ function UsageBar({ status }: UsageBarProps) {
   }
 
   return (
-    <div className="bg-gray-200 h-5 rounded overflow-hidden">
-      <div className={`${bgColor} h-full w-full`}></div>
+    <div class="bg-gray-200 h-5 rounded overflow-hidden">
+      <div class={`${bgColor} h-full w-full`}></div>
     </div>
   );
 }
