@@ -17,7 +17,7 @@ export default function Home() {
       return;
     }
 
-    const localWs = createWS("ws://localhost:5000");
+    const localWs = createWS("wss://ws.eupnea.rotko.net/");
     setWs(localWs);
 
     localWs.addEventListener("open", () => {

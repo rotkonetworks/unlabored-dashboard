@@ -35,7 +35,7 @@ export default defineConfig({
     proxy: {
       // WebSocket proxying
       '/ws': {
-        target: 'ws://localhost:5000',
+        target: 'ws://localhost:3000',
         ws: true,
       },
     },
