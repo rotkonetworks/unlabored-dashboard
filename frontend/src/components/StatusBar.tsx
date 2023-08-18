@@ -22,7 +22,7 @@ function UsageBar({ status }: UsageBarProps) {
 
   return (
     <div className="bg-gray-200 h-5 rounded overflow-hidden">
-      <div className={`${bgColor} h-full`} style={{ width: widthPercentage }}></div>
+      <div className={`${bgColor} h-full w-full`}></div>
     </div>
   );
 }

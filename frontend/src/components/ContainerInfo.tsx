@@ -1,5 +1,6 @@
 import { JSX } from 'solid-js';
 import UsageBar from './UsageBar';
+import StatusBar from './StatusBar';
 
 interface ContainerProps {
   container: {
@@ -18,7 +19,7 @@ export default function ContainerInfo(props: ContainerProps): JSX.Element {
   const statusClass = props.container.status === 'running' ? 'bg-green' : 'bg-red';
 
   return (
-    <div className="p-3 border m-1 bg-blue rounded shadow-sm">
+    <div className="p-3 border my-4 bg-blue-200 rounded shadow-sm">
       <h3 className="text-xl">{props.container.hostname}</h3>
       <p>Status: <StatusBar status={props.container.status} /></p>
       <p>CPU Usage: <UsageBar current={props.container.cpu} max={1} /></p>
