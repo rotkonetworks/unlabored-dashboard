@@ -1,0 +1,5 @@
+eupnea.rotko.net {
+    root * /opt/gh/unlabored-dashboard/frontend/dist/public
+    file_server
+    try_files {path} /index.html
+}
