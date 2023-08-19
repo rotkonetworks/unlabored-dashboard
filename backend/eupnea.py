@@ -4,16 +4,35 @@ import requests
 import os
 from dotenv import load_dotenv
 import json
+import time
+from collections import deque
+
+
+class CircularBuffer:
+    def __init__(self, maxlen):
+        self.data = deque(maxlen=maxlen)
+
+    def append(self, value):
+        self.data.append(value)
+
+    def get_oldest(self):
+        return self.data[0] if self.data else None
+
+    def get_newest(self):
+        return self.data[-1] if self.data else None
+
 
 load_dotenv()
 
 API_ENDPOINT = os.environ.get("API_ENDPOINT")
 TOKEN = os.environ.get("TOKEN")
 HEADERS = {"Authorization": TOKEN}
+RATES_WINDOW = 30  # calculate rates over the last 30 data points
 
 requests.packages.urllib3.disable_warnings()
 
 data_cache = {}
+prev_data = {}
 
 
 def fetch_json_data(endpoint):
@@ -32,7 +51,8 @@ def fetch_json_data(endpoint):
 
 def get_container_data(node_name, container):
     container_id = container.get("vmid")
-    container_info = fetch_json_data(f"/nodes/{node_name}/lxc/{container_id}/config")
+    container_info = fetch_json_data(
+        f"/nodes/{node_name}/lxc/{container_id}/config")
     container_status = fetch_json_data(
         f"/nodes/{node_name}/lxc/{container_id}/status/current"
     )
@@ -49,22 +69,55 @@ def get_container_data(node_name, container):
     }
 
 
+def calculate_rate(current, prev, time_elapsed):
+    return (current - prev) * 8 / time_elapsed  # bps rate
+
+
 def get_node_data(node):
     node_name = node.get("node")
     node_status = fetch_json_data(f"/nodes/{node_name}/status")
     containers = fetch_json_data(f"/nodes/{node_name}/lxc")
-    # sort containers by id
     containers = sorted(containers, key=lambda x: x.get("vmid", 0))
+
+    current_netin = node_status.get("netin", 0)
+    current_netout = node_status.get("netout", 0)
+
+    if node_name not in prev_data:
+        prev_data[node_name] = {
+            "netin": CircularBuffer(RATES_WINDOW),
+            "netout": CircularBuffer(RATES_WINDOW),
+            "timestamp": CircularBuffer(RATES_WINDOW),
+        }
+
+    netin_rate, netout_rate = 0, 0
+    prev_netin = prev_data[node_name]["netin"].get_oldest()
+    prev_netout = prev_data[node_name]["netout"].get_oldest()
+    prev_timestamp = prev_data[node_name]["timestamp"].get_oldest()
+
+    if (
+        prev_netin is not None
+        and prev_netout is not None
+        and prev_timestamp is not None
+    ):
+        time_elapsed = time.time() - prev_timestamp
+        netin_rate = calculate_rate(current_netin, prev_netin, time_elapsed)
+        print(f"Netin rate: {netin_rate}")
+        netout_rate = calculate_rate(current_netout, prev_netout, time_elapsed)
+
+    prev_data[node_name]["netin"].append(current_netin)
+    prev_data[node_name]["netout"].append(current_netout)
+    prev_data[node_name]["timestamp"].append(time.time())
     return {
         "name": node_name,
         "cpu": node_status.get("cpu", 0),
         "memory_used": int(node_status.get("mem", 0) / (1024 * 1024)),
         "memory_total": int(node_status.get("maxmem", 0) / (1024 * 1024)),
         "disk": int(node.get("disk") / (1024 * 1024 * 1024)),
-        "netin": node_status.get("netin", 0),
-        "netout": node_status.get("netout", 0),
+        "netin": netin_rate,
+        "netout": netout_rate,
         "containers": list(
-            map(lambda container: get_container_data(node_name, container), containers)
+            map(lambda container: get_container_data(
+                node_name, container), containers)
         ),
     }
 
@@ -107,7 +160,7 @@ class MyServerProtocol(WebSocketServerProtocol):
             else:
                 print("WebSocket is not in an open state. Skipping sending updates.")
 
-            reactor.callLater(2, self.send_updates)  # update every 3 seconds
+            reactor.callLater(2, self.send_updates)  # update every 2 seconds
         except Exception as e:
             print(f"Error in send_updates: {e}")
 
