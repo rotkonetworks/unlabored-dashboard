@@ -1,4 +1,5 @@
 dist
+dist.bak
 .solid
 .output
 .vercel
