@@ -32,10 +32,10 @@ export default function ContainerInfo(props: ContainerProps): JSX.Element {
   );
 }
 
-
 function humanReadableSize(bytes: number): string {
-  const sizes = ['Bit/s', 'KBit/s', 'MBit/s', 'GBit/s', 'TBit/s'];
-  if (bytes === 0) return '0 Byte';
-  const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)).toString(), 10);
-  return Math.round(bytes / Math.pow(1024, i)) + ' ' + sizes[i];
+    const sizes = ['Bit/s', 'KBit/s', 'MBit/s', 'GBit/s', 'TBit/s'];
+    if (bytes === 0) return '0 Bit/s';
+    const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)).toString(), 10);
+    if (i == 0) return bytes + ' ' + sizes[i]; // For Bit/s, no decimals needed
+    return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
 }
