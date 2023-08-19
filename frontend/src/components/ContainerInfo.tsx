@@ -12,6 +12,8 @@ interface ContainerProps {
     memory_total: number;
     netin: number;
     netout: number;
+    netin_rate: number;
+    netout_rate: number;
   };
 }
 
@@ -24,15 +26,15 @@ export default function ContainerInfo(props: ContainerProps): JSX.Element {
       <p>Status: <StatusBar status={props.container.status} /></p>
       <p>CPU Usage: <UsageBar current={props.container.cpu} max={1} /></p>
       <p>Memory Used: <UsageBar current={props.container.memory_used} max={props.container.memory_total} /></p>
-      <p>Network In: {humanReadableSize(props.container.netin)}</p>
-      <p>Network Out: {humanReadableSize(props.container.netout)}</p>
+      <p>Network In: {humanReadableSize(props.container.netin_rate)}</p>
+      <p>Network Out: {humanReadableSize(props.container.netout_rate)}</p>
     </div>
   );
 }
 
 
 function humanReadableSize(bytes: number): string {
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const sizes = ['Bit/s', 'KBit/s', 'MBit/s', 'GBit/s', 'TBit/s'];
   if (bytes === 0) return '0 Byte';
   const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)).toString(), 10);
   return Math.round(bytes / Math.pow(1024, i)) + ' ' + sizes[i];
