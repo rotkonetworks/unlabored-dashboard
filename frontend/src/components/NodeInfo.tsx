@@ -18,8 +18,6 @@ export default function NodeInfo(props: NodeProps): JSX.Element {
     <div p-4 border m-2 bg-blue-300 filter-drop-shadow filter-sepia-10 rounded shadow-md>
       <h2 text-2xl fw-bold>{props.node.name}</h2>
       <p>CPU Usage: <UsageBar current={props.node.cpu} max={1} /></p>
-      <p>Memory Used: <UsageBar current={props.node.memory_used} max={props.node.memory_total} /></p>
-      <p>Root: {props.node.disk} GB</p>
       <h3 text-lg mt-3>Containers:</h3>
       <div mt-2>
         {props.node.containers.map(container => <ContainerInfo container={container} />)}
