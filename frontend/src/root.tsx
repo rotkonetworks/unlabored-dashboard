@@ -26,10 +26,15 @@ export default function Root() {
       <Body>
         <Suspense>
           <ErrorBoundary>
-            <A href="/">Index</A>
-            <A href="/about">About</A>
+            <div class="flex justify-center">
+              <div class="flex">
+                <A class="bg-blue-700 text-white px-10 py-4 mr-0 shadow-xl" href="https://rotko.net/">Home</A>
+                <A class="bg-blue-700 text-white px-10 py-4 mx-0 shadow-xl" href="/">Monitor</A>
+                <A class="bg-blue-700 text-white px-10 py-4 mx-0 shadow-xl" href="https://rotko.net/docs">Docs</A>
+              </div>
+            </div>
             <Routes>
-              <FileRoutes />
+              <FileRoutes/>
             </Routes>
           </ErrorBoundary>
         </Suspense>
