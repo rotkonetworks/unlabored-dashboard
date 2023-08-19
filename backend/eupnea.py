@@ -51,11 +51,41 @@ def fetch_json_data(endpoint):
 
 def get_container_data(node_name, container):
     container_id = container.get("vmid")
-    container_info = fetch_json_data(
-        f"/nodes/{node_name}/lxc/{container_id}/config")
+    container_info = fetch_json_data(f"/nodes/{node_name}/lxc/{container_id}/config")
     container_status = fetch_json_data(
         f"/nodes/{node_name}/lxc/{container_id}/status/current"
     )
+
+    current_netin = container_status.get("netin", 0)
+    current_netout = container_status.get("netout", 0)
+
+    key = f"{node_name}-{container_id}"
+
+    if key not in prev_data:
+        prev_data[key] = {
+            "netin": CircularBuffer(RATES_WINDOW),
+            "netout": CircularBuffer(RATES_WINDOW),
+            "timestamp": CircularBuffer(RATES_WINDOW),
+        }
+
+    netin_rate, netout_rate = 0, 0
+    prev_netin = prev_data[key]["netin"].get_oldest()
+    prev_netout = prev_data[key]["netout"].get_oldest()
+    prev_timestamp = prev_data[key]["timestamp"].get_oldest()
+
+    if (
+        prev_netin is not None
+        and prev_netout is not None
+        and prev_timestamp is not None
+    ):
+        time_elapsed = time.time() - prev_timestamp
+        netin_rate = calculate_rate(current_netin, prev_netin, time_elapsed)
+        #        print(f"{key} netin rate: {netin_rate}")
+        netout_rate = calculate_rate(current_netout, prev_netout, time_elapsed)
+
+    prev_data[key]["netin"].append(current_netin)
+    prev_data[key]["netout"].append(current_netout)
+    prev_data[key]["timestamp"].append(time.time())
 
     return {
         "id": container_id,
@@ -64,8 +94,10 @@ def get_container_data(node_name, container):
         "cpu": container_status.get("cpu", 0),
         "memory_used": int(container_status.get("mem", 0) / (1024 * 1024)),
         "memory_total": int(container_status.get("maxmem", 0) / (1024 * 1024)),
-        "netin": container_status.get("netin", 0),
-        "netout": container_status.get("netout", 0),
+        "netin": current_netin,
+        "netout": current_netout,
+        "netin_rate": netin_rate,
+        "netout_rate": netout_rate,
     }
 
 
@@ -79,45 +111,12 @@ def get_node_data(node):
     containers = fetch_json_data(f"/nodes/{node_name}/lxc")
     containers = sorted(containers, key=lambda x: x.get("vmid", 0))
 
-    current_netin = node_status.get("netin", 0)
-    current_netout = node_status.get("netout", 0)
-
-    if node_name not in prev_data:
-        prev_data[node_name] = {
-            "netin": CircularBuffer(RATES_WINDOW),
-            "netout": CircularBuffer(RATES_WINDOW),
-            "timestamp": CircularBuffer(RATES_WINDOW),
-        }
-
-    netin_rate, netout_rate = 0, 0
-    prev_netin = prev_data[node_name]["netin"].get_oldest()
-    prev_netout = prev_data[node_name]["netout"].get_oldest()
-    prev_timestamp = prev_data[node_name]["timestamp"].get_oldest()
-
-    if (
-        prev_netin is not None
-        and prev_netout is not None
-        and prev_timestamp is not None
-    ):
-        time_elapsed = time.time() - prev_timestamp
-        netin_rate = calculate_rate(current_netin, prev_netin, time_elapsed)
-        print(f"Netin rate: {netin_rate}")
-        netout_rate = calculate_rate(current_netout, prev_netout, time_elapsed)
-
-    prev_data[node_name]["netin"].append(current_netin)
-    prev_data[node_name]["netout"].append(current_netout)
-    prev_data[node_name]["timestamp"].append(time.time())
     return {
         "name": node_name,
         "cpu": node_status.get("cpu", 0),
-        "memory_used": int(node_status.get("mem", 0) / (1024 * 1024)),
-        "memory_total": int(node_status.get("maxmem", 0) / (1024 * 1024)),
         "disk": int(node.get("disk") / (1024 * 1024 * 1024)),
-        "netin": netin_rate,
-        "netout": netout_rate,
         "containers": list(
-            map(lambda container: get_container_data(
-                node_name, container), containers)
+            map(lambda container: get_container_data(node_name, container), containers)
         ),
     }
 
