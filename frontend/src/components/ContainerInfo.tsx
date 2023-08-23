@@ -33,7 +33,7 @@ export default function ContainerInfo(props: ContainerProps): JSX.Element {
   }[String(container.id)[0]];
 
   return (
-    <div class="p-4 border my-4 filter-drop-shadow bg-hex-DFE9C5 rounded shadow-sm text-hex-010001">
+    <div class="font-mono p-4 border my-4 filter-drop-shadow bg-hex-DFE9C5 rounded shadow-sm text-hex-010001">
       <h3 class="text-xl text-center">{props.container.hostname}</h3>
       <p>{network} {role}</p>
       <p>Status: <StatusBar status={props.container.status} /></p>

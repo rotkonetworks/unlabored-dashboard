@@ -27,9 +27,9 @@ export default function Root() {
           <ErrorBoundary>
             <div class="flex w-full bg-op-80 bg-hex-AECE4B justify-center">
               <div class="flex text-bold no-underline font-lato">
-                <A class="bg-hex-14B3B1 text-hex-fff no-underline filter-drop-shadow px-10 py-4 mr-0 shadow-xl" href="https://rotko.net/">Home</A>
-                <A class="bg-hex-14B3B1 text-hex-fff no-underline filter-drop-shadow px-10 py-4 mx-0 shadow-xl" href="/">Monitor</A>
-                <A class="bg-hex-14B3B1 text-hex-fff no-underline filter-drop-shadow px-10 py-4 mx-0 shadow-xl" href="https://rotko.net/docs">Docs</A>
+                <A class="bg-hex-14B3B1 text-hex-fff hover:bg-blue-500 text-hex-eee no-underline filter-drop-shadow px-10 py-4 mr-0 shadow-xl" href="https://rotko.net/">Home</A>
+                <A class="bg-hex-14B3B1 text-hex-fff hover:bg-blue-500 text-hex-eee no-underline filter-drop-shadow px-10 py-4 mx-0 shadow-xl" href="/">Monitor</A>
+                <A class="bg-hex-14B3B1 text-hex-fff hover:bg-blue-500 text-hex-eee no-underline filter-drop-shadow px-10 py-4 mx-0 shadow-xl" href="https://rotko.net/docs">Docs</A>
               </div>
             </div>
             <Routes>
