@@ -12,6 +12,7 @@ from twisted.internet.threads import deferToThread
 # Constants
 RATES_WINDOW = 5
 PRUNE_THRESHOLD = 120  # 2 minutes in seconds
+UPDATE_RATE = 5
 requests.packages.urllib3.disable_warnings()
 
 # Global Variables
@@ -37,7 +38,7 @@ class CircularBuffer:
 
 def fetch_json_data(api_endpoint, token, path):
     HEADERS = {"Authorization": token}
-    TIMEOUT = 15
+    TIMEOUT = 5
 
     url = f"{api_endpoint}{path}"
     try:
@@ -241,11 +242,11 @@ def update_cache():
 
         dlist = defer.DeferredList(deferreds)
         dlist.addCallback(process_results, NODE_CONFIGS)
-        dlist.addCallback(lambda _: reactor.callLater(15, update_cache))
+        dlist.addCallback(lambda _: reactor.callLater(UPDATE_RATE, update_cache))
 
     except Exception as e:
         print(f"Error updating cache: {e}")
-        reactor.callLater(15, update_cache)
+        reactor.callLater(UPDATE_RATE, update_cache)
 
 
 class MyServerProtocol(WebSocketServerProtocol):
