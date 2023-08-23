@@ -67,7 +67,7 @@ def calculate_rate(current, prev, time_elapsed):
 
 
 def extract_node_number(node_name):
-    return node_name[-1]  # extract the last character, assuming it's the node number
+    return node_name[-2:]
 
 
 def get_node_data(api_endpoint, token, node):
@@ -78,14 +78,8 @@ def get_node_data(api_endpoint, token, node):
         api_endpoint, token, f"/nodes/{node_name}/lxc")
     containers = sorted(containers, key=lambda x: x.get("vmid", 0))
 
-    storage_types = fetch_storage_types(api_endpoint, token, node_name)
-
-    # Here's where you can check the type of storage and fetch accordingly
     storage_data = {}
-    if "zfs_storage" in storage_types:
-        storage_data = get_zfs_storage_data(api_endpoint, token, node_name)
-    elif "btrfs_storage" in storage_types:
-        storage_data = get_btrfs_storage_data(api_endpoint, token, node_name)
+    storage_data = get_zfs_storage_data(api_endpoint, token, node_name)
 
     return {
         "name": node_name,
@@ -166,12 +160,6 @@ def get_container_data(api_endpoint, token, node_name, container):
     }
 
 
-def fetch_storage_types(api_endpoint, token, node_name):
-    storages = fetch_json_data(
-        api_endpoint, token, f"/nodes/{node_name}/storage")
-    return [storage.get("storage") for storage in storages]
-
-
 def get_zfs_storage_data(api_endpoint, token, node_name):
     # Extract node number from node_name
     node_number = extract_node_number(node_name)
@@ -183,19 +171,7 @@ def get_zfs_storage_data(api_endpoint, token, node_name):
     
     return {
         "storage_used": zfs_status.get("used", 0),
-        "storage_total": zfs_status.get("total", 0),
-        "storage_type": zfs_status.get("type", ""),
-    }
-
-
-def get_btrfs_storage_data(api_endpoint, token, node_name):
-    btrfs_status = fetch_json_data(
-        api_endpoint, token, f"/nodes/{node_name}/storage/btrfs_storage/status"
-    )
-    return {
-        "storage_used": btrfs_status.get("used", 0),
-        "storage_total": btrfs_status.get("total", 0),
-        "storage_type": btrfs_status.get("type", ""),
+        "storage_total": zfs_status.get("total", 0)
     }
 
 

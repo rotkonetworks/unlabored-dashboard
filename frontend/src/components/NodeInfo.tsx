@@ -14,7 +14,6 @@ memory_total: number;
 swap_used: number;
 swap_total: number;
 containers: Array<typeof ContainerInfo>;
-storage_type: string;
 storage_used: number;
 storage_total: number;
       };
@@ -35,7 +34,7 @@ export default function NodeInfo(props: NodeProps): JSX.Element {
 			<h4>Swap</h4>
 			<UsageBar current={props.node.swap_used} max={props.node.swap_total} />
 			({formatBytes(props.node.swap_total)} / {formatBytes(props.node.swap_total)})
-			<h4>{props.node.storage_type}_storage</h4>
+			<h4>NVMepool</h4>
 			<UsageBar current={props.node.storage_used} max={props.node.storage_total} />
 			({formatBytes(props.node.storage_used)} / {formatBytes(props.node.storage_total)})
 			<h3 class="text-lg text-center mt-3">Containers</h3>
