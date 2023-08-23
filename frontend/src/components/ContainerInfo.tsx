@@ -21,7 +21,7 @@ export default function ContainerInfo(props: ContainerProps): JSX.Element {
   const statusClass = props.container.status === 'running' ? 'bg-hex-AECE4B' : 'bg-red'; // Neon green for running status
 
   return (
-    <div class="p-4 border my-4 filter-drop-shadow bg-hex-DFE9C5 rounded shadow-sm text-hex-010001">
+    <div class="font-mono p-4 border my-4 filter-drop-shadow bg-hex-DFE9C5 rounded shadow-sm text-hex-010001">
       <h3 class="text-xl text-center">{props.container.hostname}</h3>
       <p>Status: <StatusBar status={props.container.status} /></p>
       <p>CPU Usage: <UsageBar current={props.container.cpu} max={1} /></p>

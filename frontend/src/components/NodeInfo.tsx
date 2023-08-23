@@ -21,7 +21,7 @@ storage_total: number;
 
 export default function NodeInfo(props: NodeProps): JSX.Element {
 	return (
-			<div class="p-4 border m-2 bg-hex-A3916F bg-op-80 filter-drop-shadow text-hex-010001 rounded shadow-md">
+			<div class="font-lato p-4 border m-2 bg-hex-A3916F bg-op-80 filter-drop-shadow text-hex-010001 rounded shadow-md">
 			<h2 class="text-2xl text-center fw-bold font-lobster">{props.node.name}</h2>
 			<h3 class="text-lg text-center mt-3">System</h3>
 			<h4>CPU</h4>
