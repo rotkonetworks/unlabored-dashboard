@@ -24,15 +24,15 @@ export default function ContainerInfo(props: ContainerProps): JSX.Element {
     '1': 'Validator',
     '2': 'Bootnode',
     '3': 'Endpoint'
-  }[String(container.id)[0]];
+  }[String(props.container.id)[0]];
 
   const network = {
     '1': 'Polkadot',
     '2': 'Kusama',
     '3': 'Westend'
-  }[String(container.id)[1]];
+  }[String(props.container.id)[1]];
 
-  const instance = String(container.id)[2].padStart(2, '0');
+  const instance = String(props.container.id)[2].padStart(2, '0');
 
   return (
     <div class="font-mono p-4 border my-4 filter-drop-shadow bg-hex-DFE9C5 rounded shadow-sm text-hex-010001">
