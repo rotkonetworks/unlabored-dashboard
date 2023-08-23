@@ -1,5 +1,5 @@
 [Unit]
-Description=Eupnea devService
+Description=Eupnea prodService
 After=network.target
 
 [Service]
@@ -7,7 +7,7 @@ Type=simple
 User=eupneauser
 Group=eupneauser
 WorkingDirectory=/opt/gh/unlabored-dashboard/backend
-ExecStart=/opt/gh/unlabored-dashboard/backend/dist/eupnea --port 5011
+ExecStart=/opt/gh/unlabored-dashboard/backend/dist/eupnea.prod --port 5010
 Restart=on-failure
 RestartSec=10
 

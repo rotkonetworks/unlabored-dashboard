@@ -8,6 +8,8 @@ netlify
 
 # Environment
 .env
+.env.production
+.env.development
 .env*.local
 
 # dependencies
