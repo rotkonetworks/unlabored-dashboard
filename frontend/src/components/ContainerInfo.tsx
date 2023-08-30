@@ -56,9 +56,9 @@ export default function ContainerInfo(props: ContainerProps): JSX.Element {
   const statusClass = props.container.status === 'running' ? 'bg-hex-AECE4B' : 'bg-red'; // Neon green for running status
 
   // Extract the relevant digits from container.id
-  const firstDigit = String(container.id)[0];
-  const secondDigit = String(container.id)[1];
-  const thirdDigit = String(container.id)[2];
+  const firstDigit = String(props.container.id)[0];
+  const secondDigit = String(props.container.id)[1];
+  const thirdDigit = String(props.container.id)[2];
 
   // Role mapping based on the first digit
   const role = {
@@ -112,7 +112,7 @@ export default function ContainerInfo(props: ContainerProps): JSX.Element {
       <p>Memory Used: <UsageBar current={props.container.memory_used} max={props.container.memory_total} /></p>
       <p>Network In: {humanReadableSize(props.container.netin_rate)}</p>
       <p>Network Out: {humanReadableSize(props.container.netout_rate)}</p>
-      <p>blockHeight: (blockHeight())</p>
+      <p>blockHeight: {blockHeight()}</p>
     </div>
   );
 }
