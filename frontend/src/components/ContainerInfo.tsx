@@ -177,11 +177,11 @@ function renderContainerInfo(
       </p>
       <p>network in: {humanReadableSize(netin_rate)}</p>
       <p>network out: {humanReadableSize(netout_rate)}</p>
-      <p>block height: {blockHeight()}</p>
       <p>
         sync:{" "}
         <UsageBar current={blockHeight()} max={latestOfficialBlockHeight()} />
       </p>
+      <p>{blockHeight()} / {latestOfficialBlockHeight()}</p>
     </div>
   );
 }
