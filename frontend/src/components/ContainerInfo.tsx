@@ -61,7 +61,7 @@ const parachains = {
 };
 
 export default function ContainerInfo(props: ContainerProps): JSX.Element {
-  const { id, hostname, status, cpu, memory_used, memory_total, netin_rate, netout_rate } = container;
+  const { id, hostname, status, cpu, memory_used, memory_total, netin_rate, netout_rate } = props.container;
   const [blockHeight, setBlockHeight] = createSignal(0);
   const [latestOfficialBlockHeight, setLatestOfficialBlockHeight] = createSignal(0);
 
@@ -115,13 +115,13 @@ function renderContainerInfo({ network, role, instance, hostname, status, cpu, m
     <div class="font-mono p-4 border my-4 filter-drop-shadow bg-hex-dfe9c5 rounded shadow-sm text-hex-010001">
       <h3 class="text-xl text-center">{hostname.split('.')[0]}</h3>
       {network && role && <p>{`${network} ${role} ${instance}`}</p>}
-      <p>status: <statusbar status={status} /></p>
-      <p>cpu usage: <usagebar current={cpu} max={1} /></p>
-      <p>memory used: <usagebar current={memory_used} max={memory_total} /></p>
-      <p>network in: {humanreadablesize(netin_rate)}</p>
-      <p>network out: {humanreadablesize(netout_rate)}</p>
-      <p>block height: {blockheight()}</p>
-      <p>sync: <usagebar current={blockheight()} max={latestofficialblockheight()} /></p>
+      <p>status: <StatusBar status={status} /></p>
+      <p>cpu usage: <UsageBar current={cpu} max={1} /></p>
+      <p>memory used: <UsageBar current={memory_used} max={memory_total} /></p>
+      <p>network in: {humanReadableSize(netin_rate)}</p>
+      <p>network out: {humanReadableSize(netout_rate)}</p>
+      <p>block height: {blockHeight()}</p>
+      <p>sync: <UsageBar current={blockHeight()} max={latestOfficialBlockHeight()} /></p>
     </div>
   );
 }
