@@ -61,8 +61,22 @@ const parachains = {
 };
 
 export default function ContainerInfo(props: ContainerProps): JSX.Element {
+  const { id, hostname, status, cpu, memory_used, memory_total, netin_rate, netout_rate } = container;
   const [blockHeight, setBlockHeight] = createSignal(0);
   const [latestOfficialBlockHeight, setLatestOfficialBlockHeight] = createSignal(0);
+
+  const { firstDigit, secondDigit, thirdDigit } = parseContainerId(id);
+  const role = roleMapping[firstDigit];
+  const instance = thirdDigit === '0' ? '00' : thirdDigit;
+  
+  // If it's a validator, return early without WebSocket connections
+  if (role === 'Validator') {
+    return renderContainerInfo({ network: getNetwork(firstDigit, secondDigit), role, instance: thirdDigit, hostname, status, cpu, memory_used, memory_total, netin_rate, netout_rate, blockHeight, latestOfficialBlockHeight });
+  }
+
+  const statusClass = props.container.status === 'running' ? 'bg-hex-AECE4B' : 'bg-red';
+
+
   let api: ApiPromise;
 
   const fetchBlockHeight = async () => {
@@ -80,32 +94,34 @@ export default function ContainerInfo(props: ContainerProps): JSX.Element {
     api?.disconnect();
   });
 
-  const statusClass = props.container.status === 'running' ? 'bg-hex-AECE4B' : 'bg-red';
+  return renderContainerInfo({ network: getNetwork(firstDigit, secondDigit), role, instance, hostname, status, cpu, memory_used, memory_total, netin_rate, netout_rate, blockHeight, latestOfficialBlockHeight });
+}
 
-  const [firstDigit, secondDigit, thirdDigit] = String(props.container.id).split('');
 
-  const role = roleMapping[firstDigit];
+function parseContainerId(id: number) {
+  const [firstDigit, secondDigit, thirdDigit] = String(id).split('');
+  return { firstDigit, secondDigit, thirdDigit };
+}
 
-  let network;
+function getNetwork(firstDigit: string, secondDigit: string) {
   if (['1', '2', '3'].includes(firstDigit)) {
-    network = primaryNetworks[secondDigit];
-  } else {
-    network = parachains[secondDigit];
+    return primaryNetworks[secondDigit];
   }
+  return parachains[secondDigit];
+}
 
-  const instance = thirdDigit === '0' ? '00' : thirdDigit;
-
+function renderContainerInfo({ network, role, instance, hostname, status, cpu, memory_used, memory_total, netin_rate, netout_rate, blockHeight, latestOfficialBlockHeight }: any): JSX.Element {
   return (
-    <div class="font-mono p-4 border my-4 filter-drop-shadow bg-hex-DFE9C5 rounded shadow-sm text-hex-010001">
-      <h3 class="text-xl text-center">{props.container.hostname.split('.')[0]}</h3>
+    <div class="font-mono p-4 border my-4 filter-drop-shadow bg-hex-dfe9c5 rounded shadow-sm text-hex-010001">
+      <h3 class="text-xl text-center">{hostname.split('.')[0]}</h3>
       {network && role && <p>{`${network} ${role} ${instance}`}</p>}
-      <p>Status: <StatusBar status={props.container.status} /></p>
-      <p>CPU Usage: <UsageBar current={props.container.cpu} max={1} /></p>
-      <p>Memory Used: <UsageBar current={props.container.memory_used} max={props.container.memory_total} /></p>
-      <p>Network In: {humanReadableSize(props.container.netin_rate)}</p>
-      <p>Network Out: {humanReadableSize(props.container.netout_rate)}</p>
-      <p>Block Height: {blockHeight()}</p>
-      <p>Sync: <UsageBar current={blockHeight()} max={latestOfficialBlockHeight()} /></p>
+      <p>status: <statusbar status={status} /></p>
+      <p>cpu usage: <usagebar current={cpu} max={1} /></p>
+      <p>memory used: <usagebar current={memory_used} max={memory_total} /></p>
+      <p>network in: {humanreadablesize(netin_rate)}</p>
+      <p>network out: {humanreadablesize(netout_rate)}</p>
+      <p>block height: {blockheight()}</p>
+      <p>sync: <usagebar current={blockheight()} max={latestofficialblockheight()} /></p>
     </div>
   );
 }
