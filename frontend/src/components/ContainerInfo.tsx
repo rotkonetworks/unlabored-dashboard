@@ -34,21 +34,17 @@ const OFFICIAL_ENDPOINTS = {
   'Encointer': 'wss://kusama.api.encointer.org'
 };
 
-const role = {
+const roleMapping = { 
   '1': 'Validator',
   '2': 'Bootnode',
   '3': 'RPC Endpoint',
   '4': 'Collator',
   '5': 'Bootnode',
   '6': 'RPC Endpoint'
-}[firstDigit];
+};
 
 // Network mapping based on the second digit for primary networks
-const primaryNetworks = {
-  '1': 'Polkadot',
-  '2': 'Kusama',
-  '3': 'Westend'
-};
+const primaryNetworks = { '1': 'Polkadot', '2': 'Kusama', '3': 'Westend' };
 
 // Network mapping for parachains
 const parachains = {
