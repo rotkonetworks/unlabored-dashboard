@@ -80,7 +80,8 @@ export default function ContainerInfo(props: ContainerProps): JSX.Element {
   const instance = thirdDigit === "0" ? "00" : thirdDigit;
 
   // If it's a validator, return early without WebSocket connections
-  if (role === "Validator") {
+  // or collator or if hostname subdomain is ansible or monitor 
+  if (role === "Validator" || role === "Collator" || hostname.includes("ansible") || hostname.includes("monitor")) {
     return renderContainerInfo({
       network: getNetwork(firstDigit, secondDigit),
       role,
