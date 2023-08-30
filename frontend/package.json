@@ -23,6 +23,7 @@
     "vite": "^4.4.9"
   },
   "dependencies": {
+    "@polkadot/api": "^10.9.1",
     "@solid-primitives/event-listener": "^2.2.14",
     "@solid-primitives/websocket": "^1.1.0",
     "@solidjs/meta": "^0.28.5",
