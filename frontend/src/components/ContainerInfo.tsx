@@ -79,6 +79,10 @@ export default function ContainerInfo(props: ContainerProps): JSX.Element {
   const role = roleMapping[firstDigit];
   const instance = thirdDigit === "0" ? "00" : thirdDigit;
 
+  function getOfficialEndpoint(network: string) {
+  return OFFICIAL_ENDPOINTS[network];
+}
+
   // If it's a validator, return early without WebSocket connections
   // or collator or if hostname subdomain is ansible or monitor 
   if (role === "Validator" || role === "Collator" || hostname.includes("ansible") || hostname.includes("monitor")) {
@@ -112,6 +116,22 @@ export default function ContainerInfo(props: ContainerProps): JSX.Element {
     const latestHeader = await api.rpc.chain.getHeader();
     setBlockHeight(latestHeader.number.toNumber());
   };
+
+  const fetchOfficialBlockHeight = async (network: string) => {
+    const wsUrl = getOfficialEndpoint(network);
+    const wsProvider = new WsProvider(wsUrl);
+    const officialApi = await ApiPromise.create({ provider: wsProvider });
+
+    const latestHeader = await officialApi.rpc.chain.getHeader();
+    setLatestOfficialBlockHeight(latestHeader.number.toNumber());
+
+    officialApi.disconnect();  // cleanup immediately after fetching data
+  };
+
+  createEffect(() => {
+    const networkName = getNetwork(firstDigit, secondDigit);
+    fetchOfficialBlockHeight(networkName);
+  });
 
   createEffect(fetchBlockHeight);
 
