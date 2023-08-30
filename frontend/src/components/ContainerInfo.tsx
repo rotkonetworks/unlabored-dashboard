@@ -1,4 +1,5 @@
-import { JSX } from 'solid-js';
+import { JSX, onCleanup, createSignal, createEffect } from 'solid-js';
+
 import UsageBar from './UsageBar';
 import StatusBar from './StatusBar';
 
@@ -18,6 +19,40 @@ interface ContainerProps {
 }
 
 export default function ContainerInfo(props: ContainerProps): JSX.Element {
+  const [blockHeight, setBlockHeight] = createSignal(0);
+  let ws;
+
+  const fetchBlockHeight = () => {
+    const wsUrl = `wss://${props.container.hostname}:42${props.container.id}`;
+    ws = new WebSocket(wsUrl);
+  
+    ws.onopen = () => {
+        ws.send('{"id":1, "jsonrpc":"2.0", "method":"chain_getHeader", "params":[]}');
+    };
+  
+    ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        const hexNumber = data?.result?.number || "0x0";
+        setBlockHeight(parseInt(hexNumber, 16));
+    };
+  
+    ws.onerror = (error) => {
+        console.error("WebSocket Error:", error);
+    };
+  
+    ws.onclose = () => {
+        console.log("WebSocket closed.");
+    };
+  };
+
+  createEffect(fetchBlockHeight);
+
+  onCleanup(() => {
+    if (ws) {
+      ws.close();
+    }
+  });
+
   const statusClass = props.container.status === 'running' ? 'bg-hex-AECE4B' : 'bg-red'; // Neon green for running status
 
   // Extract the relevant digits from container.id
@@ -77,6 +112,7 @@ export default function ContainerInfo(props: ContainerProps): JSX.Element {
       <p>Memory Used: <UsageBar current={props.container.memory_used} max={props.container.memory_total} /></p>
       <p>Network In: {humanReadableSize(props.container.netin_rate)}</p>
       <p>Network Out: {humanReadableSize(props.container.netout_rate)}</p>
+      <p>blockHeight: (blockHeight())</p>
     </div>
   );
 }
@@ -88,3 +124,4 @@ function humanReadableSize(bytes: number): string {
     if (i === 0) return Math.round(bytes) + ' ' + sizes[i];
     return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
 }
+
